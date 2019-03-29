@@ -1,0 +1,100 @@
+Learn Docker Notes
+
+- Lessons & Assignments
+- Lessons (follow along)
+- Assignments - To Complete
+
+#############################
+#                           #
+#  Section - INTRODUCTION  #
+#                           #
+#############################
+
+Docker runs applications / light-weight OS's inside containers
+to allow you to bundle together all your dependencies in a way that 
+gives you control and consistency over the environment that your
+application runs in.
+
+Containers and VMs are not the same thing...
+VMs are entirely separate.
+Containers are much more lightweight and resuse the system kernel.
+
+Two Perspectives:
+- Developer
+  - Can create reproducible, portable builds of your applications
+    with it's dependencies. Deploy, Build and Run in a controlled way.
+
+- Devops Engineer
+  - Devops receive bundle from developers and can deploy. It's fully,
+    disposable, and makes services much more scalable.
+
+
+Where does it run?
+  - Windows and Linux, you can run on macos, linux and windows.
+
+Moby project is a project which gives people the ability to build there
+own containers. Docker CE is built using Moby.
+
+Docker Engine powers the docker.
+  - It has a server daemon process.
+    - Controls: Container, images, data-volumes, and the network
+  - A rest API which allows you to communicate with the containers
+  - a cli to control the containers
+
+
+###################################
+#                                 #
+#  Section - DOCKER FUNDAMENTALS  #
+#                                 #
+###################################
+
+- When running an interactive shell (e.g. lesson CH2-S2-L2) Alpine, need
+  to use '-it' and 'sh' parameters.
+
+/ # cat /etc/os-release
+  This command tells us about the os we are using in the container
+
+/ # uname -r
+  This command tells us which kernel we are using
+
+Ctrl+D Stops the container
+Ctrl+P then Ctrl+Q Quits the container but keeps it running in the background
+
+'docker container attach <name>' To reattach to a running container
+'docker container ls' lists the running containers
+'docker container stop <name>' stops a specific container
+'docker container run -it alpine -d' starts a container in detached mode.
+
+Cleaning Up ->
+'docker container rm <CONTAINER ID>' removes a container
+'docker container rm $(docker container ls -aq)' removes all container data
+
+'docket image rm' will remove an image for you
+
+'docker container run --rm <container-image>' will automatically remove an 
+image once it finishes running.
+
+The '--name' argument will add the given name as the name of the container.
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################
+#                              #
+#  Section - UTILIZING DOCKER  #
+#                              #
+################################
+###############################
+#                             #
+#  Section - ADOPTING DOCKER  #
+#                             #
+###############################
