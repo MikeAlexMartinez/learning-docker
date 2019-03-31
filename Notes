@@ -48,6 +48,10 @@ Docker Engine powers the docker.
 #                                 #
 ###################################
 
+##
+##  Chapter - Getting Started
+##
+
 - When running an interactive shell (e.g. lesson CH2-S2-L2) Alpine, need
   to use '-it' and 'sh' parameters.
 
@@ -66,25 +70,471 @@ Ctrl+P then Ctrl+Q Quits the container but keeps it running in the background
 'docker container run -it alpine -d' starts a container in detached mode.
 
 Cleaning Up ->
-'docker container rm <CONTAINER ID>' removes a container
-'docker container rm $(docker container ls -aq)' removes all container data
+  'docker container rm <CONTAINER ID>' removes a container
+  'docker container rm $(docker container ls -aq)' removes all container data
 
-'docket image rm' will remove an image for you
+  'docket image rm' will remove an image for you
 
-'docker container run --rm <container-image>' will automatically remove an 
-image once it finishes running.
+  'docker container run --rm <container-image>' will automatically remove an 
+  image once it finishes running.
 
-The '--name' argument will add the given name as the name of the container.
+  The '--name' argument will add the given name as the name of 
+  the container.
+
+Publishing a service:-
+  Using nginx
+
+  'docker container run -p 80:80 nginx' allows us to run nginx 
+  and interact with it via port 80. the default for http 
+  requests.
+
+  example - running with '-p 8080:80' will mean if we go to 
+  localhost:8080 we will see the nginx response.
+
+data in containers:-
+  We can add data into containers using the --volume flag
+
+  'docker container run -p 80:80 --volume /home/mikey/Docker/learning-docker/html:/usr/share/nginx/html nginx'
+  will move files contained in passed html folder into user 
+  share folder in the container.
+
+isolation:-
+
+  containers run in isolation, both from the operating system 
+  and other containers.
+
+  Docker achieves this by using the namespacing feature in the 
+  kernel.
+
+  there are more but here are three that they use:
+  pid namespace
+  net namespace
+  mount namespace
+
+Container Communication:-
+
+  in alpine sh you can run
+  `ifconfig eth0` to determine inet addr.
+
+  and can then ping this endpoint from other containers
+
+  e.g.
+  a container on 'inet addr:172.17.0.2'
+  can be pinged from other containers using the 'ping 172.17.0.2' command
+
+  The now deprecated '--link' command can allow you to communicate with another container more easily.
+
+  e.g. running:
+  'docker container run -it --rm --name c2 --link c1 alpine sh'
+  allows you to use 'ping c1' to communicate with another container.
+
+User defined networks:-
+
+  'docker network ls' Lists all available bridges on the network.
+  containers will automatically be attached to the 'bridge' network if
+  one isn't listed
+
+  'docker network create <name>' Creates a new network
+
+  we can then create containers and attach them to the created network.
+  e.g.
+  'docker container run --rm -it --name c2 --network test alpine sh'
+
+  and it can communicate with other containers on the same network
+  easily using the container name, rather than an IP address.
+
+The CLI:-
+  you can use --help to read info about specific commands.
+
+hide legacy commands:-
+  
+  'add export DOCKER_HIDE_LEGACY_COMMANDS=true'
+  to your bash profile
+
+##
+##  Chapter - Image Basics
+##
+
+What is an Image:-
+  An image packages all the information for a container
+  application into a portable and executable format.
+
+  contains the application, and everything it needs to run.
+
+  When you excute the image, you run everything that has been
+  set up in the image.
+
+Manages Images:-
+
+  'docker image ls' lists all images on the system.
+
+  a tag is provided to specify which version of an image to use.
+  If none is provided then it will default to the 'latest'
+
+  image id is unique.
+
+  'docker image rm <image-name>:<tag>' removes an image
+  'docker image pull <image-name>:<tag>' pulls down an image
+
+Repositories and Tags:-
+
+  In docker hub repositories have listed their various available tag names.
+
+  One image can have multiple tags. So when listed, you may see the same image listed twice (check the ids for uniqueness)
+
+Registries:-
+  Docker hub is the front end for a specific frontend registry.
+  Their are other registries available.
+
+Docker Hub:-
+  Official repositories are by docker themselves are people they 
+  trust.
+
+  Official images are scanned for security vulnerabilities whereas
+  others are not.
+
+  Docker Hub has been superseded by docker cloud and docker store.
+
+Creating Image:-
+  We can create images with a Dockerfile.
+
+  The dockerfile consists of step by step instructions to create
+  a docker image.
+
+  We can build an image with the following command
+  'docker image build -t myalpine:latest .'
+  where . is the context, i.e. the location of the dockerfile.
+  -t allows us to tag the container
+
+Comments:-
+  User the # symbol at the beginning of the line
+
+Pushing images:
+  can view all containers including those we created using
+  'docker image ls' command
+
+  before pushing you must first provide a namespace for the docker 
+  image. This is your docker id. You can do this by retagging your 
+  image.
+  'docker image tag myalpine:latest projectmam/myalpine:latest'
+
+  With this we are now able to push the image up to docker store / hub with following command:
+  'docker image push projectmam/myalpine:latest'
+
+Plugins:-
+  We can find plugins on docker store.
+  We can then install them by following instructions from the plugin.
+  e.g.
+  'docker plugin install store/weaveworks/net-plugin:2.5.1'
+
+  this weaveworks plugin allows us to use a different network driver when we create a network in docker 
+
+#
+# Chapter - Container Lifecycle
+#
+
+detaching and attaching:-
+  You can only detach from from containers (Ctrl+P -> Ctrl+Q)
+  when you pass the '-it' flag (interactive);
+
+  you can attach with:
+  'docker container attach <name>
+
+  starting with -d flag
+
+Visit your container:-
+  We can execute commands in the container using the following:
+  'docker container exec c1 cat /etc/nginx/nginx.conf'
+  'docker container exec <name> <commands ....>'
+  
+  we can also execute a shell, e.g.
+  'docker container exec -it c1 sh'
+
+Interacting with containers:-
+  '-i' provides stdin interface to allow you to interact with the 
+  shell
+
+  '-t' provides a pseudo tty to allow more user friendly interface
+
+stopping a container:-
+  'docker container stop <name>' will stop a container. This uses a
+  SIGTERM command to allow the container to gracefully terminate 
+  the process.
+
+  'docker container kill <name>' will stop a container using the 
+  SIGKILL command which immediately stops the container. you can 
+  pass '--signal' in with kill command to pass in a different 
+  signal command. the default is 'KILL'
+
+  these signals target the process with PID1 (process id 1)
+
+the end of containers:-
+  a process needs to be configured to accept specific commands.
+  Ctrl+C won't necessarily kill a processs.
+
+  If there is no PID1 then the container will terminate.
+
+debugging issues in containers:-
+  we can open up a shell to interact the the container from inside.
+
+  a lot of commands may be missing from docker containers.
+
+  when program being run in container, cmds may not be passed on 
+  to the process so commands such as Ctrl+C will not work.
+
+becoming PID1:-
+  We should try to use the exec form of the CMD argument in order 
+  to be able to execute cmds without needing to acquire the main 
+  shell process.
+
+reading logs:-
+  we can see logs produced in a container when detached by using
+  'docker container logs <name>' command
+  or 'docker container logs -f <name>' which "follows" the logs
+
+  containers should not write log files, they should send them to 
+  stdout or std arrow
+
+producing logs:-
+  If an application wants to write files you can write them to
+  '/dev/stdout' or /dev/stderr' and these will still be passed on.
+
+  logs shouldn't be logged internally as containers should be 
+  disposable.
 
 
+#
+# Chapter - Persisting Data
+#
+
+Containers should ideally be stateless, but that isn't always 
+possible.
+
+Mounting data:-
+  Although --volume says volume the command to add files is 
+  technically a bind mount, as we are mounting files from 
+  one location to the inside of the container.
+
+  e.g.
+  'docker container run -d --rm -v /home/mikey/Docker/learning-docker/html:/var/www/html:ro -p 8080:80 --name n1 projectmam/newginx:latest'
 
 
+shortening the command:-
+  can use the $(pwd) command to add the current working directory
+  into the command automatically.
+  e.g.
+  docker container run -d --rm -v $(pwd)/html:/var/www/html:ro -p 8080:80 --name n1 projectmam/newginx:latest
+
+the mount option:-
+  it is possible to mount files as we did with the 'volume' 
+  command by using the '--mount' command instead.
+  e.g.
+
+  'docker container run --mount type=bind,src=$(pwd)/html,destination=/var/www/html,readonly -p 8080 nginx:latest'
+
+volumes:-
+  with the --volume command docker is in control of how data
+  is mounted in the container. with mount docker is dependent
+  on the stucture of the host system.
+
+  if no name or data is provided to docker then docker creates
+  an anonymous volume.
+
+naming volumes:-
+  we cna name volumes by prepending a <name>:/data to the colume 
+  argument.
+
+  docker doesn't automatically delete volumes for you. the volumes 
+  created still persist into the host filesystem.
+
+  'docker volume ls' lists the volumes present in the filesystem.
+
+using mount for volumes:-
+  
+  'docker container run -it --volume my-alpine:/data alpine:latest'
+  this command which uses --volume can be transformed as follows:
+  'docker container run -it --mount type=volume,src=my-volume,destination=/data alpine:latest'
+
+  You can also use 'dst' instead of 'destination'
+
+Managing Volumes:-
+  'docker volume rm <name>' removes a volume
+
+  You can't remove volumes that are in user.
+
+  'docker volume inspect <name>'
+  lists information about a volume such as where it is stored
+  and when it was created etc.
+
+  you can also inspect containers and see information that way.
+  'docker container inspect <name>'
+
+  we can view the Mounts in the mounts key.
+
+  'docker volume prune' deletes all unused volumes.
+
+  'docker volume create <name>' creates a volume with the passed 
+  name.
+
+  if you use --rm to create a container, any volumes created will
+  also be deleted.
 
 
+  docker container run -d --volume postgres-data:/var/lib/postgresql/data --name pg postgres:9.6.12-alpine
+
+Using volumes from other containers:-
+  It is possible to mount the same volume to multiple containers
+  simultaneously.
+
+  the argument '--volumes-from <container-name>' allows you to
+  automatically mount any volumes being used by one container to
+  another container that you are starting up.
+
+Prepopulating Volumes:-
+  ???
+
+Volumes vs Bind mounts
+  - bind mounts rely on the file system structure of the host
+    - you need to manage them
+    - the container has access to the files on the docker host
+  - volumes are managed by Docker
+    - independent of the file system structure on the host
+    - easy to migrate and backup
+    - can be managed via the docker client
+    - can be pre-populated with the data from a container
+
+  When to use what:
+    Bind mount:
+      - when you want to access the data from the host and the 
+      container
+        - source code
+        - config files
+    Volume:
+      - when you want to persist data from the container
+      - when you want to share data between containers.
+        - backups
+        - configurations
+
+  Named vs Anonymous Volumes
+    Named:-
+      - you care about the data long term.
+        - a db
+        - other services that persist data
+      - you need to easily identify the volume
+        - reuse them
+        - for backups
+        - migrate them
+    Anon:-
+      - You don't care about the data long-term
+        - testing
+      - when you need to share data between containers
+        - using --volumes-from
+
+#
+# Chapter - Data in Images
+#
+
+Copying Data:-
+  Sometimes you want to ship an image with the necessary source 
+  files inside.
+
+  the 'COPY' command in a Dockerfile can allow you to bundle files into
+  an image. e.g
+
+  'COPY ./html /var/www/html' copies files from the html folder into the
+  '/var/www/html' folder of the image.
+
+  then when building the image it's necessary to provide the context (root folder)
+  so that the COPY command knows where to fetch the files.
+
+  e.g.
+
+  'docker image build -t projectmam/nginx:latest .'
+
+Using Wildcards:-
+  We can be less specific and use wildcards to leave variable text.
+  e.g.
+  
+  'COPY ./html/*.html /var/www/html/' specifies only the *.html file to copy 
+  across
+
+  docker is written in 'Go' so the wildcard rules follow those that you would
+  find in Go. (see: https://goland.org/pkg/path/filepath/#Match)
+
+copying multiple files:-
+  You can specify multiple sources to copy into a destination folder.
+
+  e.g.
+
+  COPY ./html/*.html ./html/assets/ ./html/css/ /var/www/html/
+
+  copies all files from html folder ending in .html.
+  all files in assets folder
+  and all files in css directly into the html folder specified.
+
+  if you take off the forward slashes from assets and css, it will
+  copy both the files and the folder structure into the html directory.
+
+the magic of ADD:-
+  the ADD command does similar things to COPY but can also do other things.
+  ADD automatically copies and extracts tar files for you. it also supports
+  tar files with compression.
+
+  you can also add a remote url and copy into a file.
+
+ignoring files:-
+  you can create a .dockerignore file. this will ignore the listed files.
+  see the manual (https://docs.docker.com/engine/reference/builder/#dockerignore-file)
 
 
+#
+# Networking 101
+#
 
+Publishing Ports:-
+  We publish ports in docker using the -p command or --publish
 
+  you can specify specific host addresses too. e.g. 127.0.0.1:8080:80
+
+  however a container service only listening on localhost won't be able to listen 
+  publish a port externally
+
+Publishing multiple ports:-
+  You can publish multiple ports.
+
+  Either by providing the -p flag multiple times. or publishing a range or ports
+  which map to those given to the container. e.g. 
+  '-p 80-99:80-99'
+
+  (see https://docs.docker.com/engine/userguide/networking/#exposing-and-publishing-ports)
+
+Links:-
+  Links are deprecated because the docker file would create an entry in /etc/hosts
+  but wouldn't update the entries later on. Which is why you should opt to use
+  networks.
+
+User Defined Networks:-
+  bridge is the default network
+  'docker network create <name>' creates a new network.
+
+  '--network' attaches a named network to a container.
+
+  'docker network rm <name>' can delete a network
+
+Resolving host names:-
+  adding multiple containers to the same network automatically adds them to
+  dockers internal dns. allowing you to use container names to communicate with
+  eachother.
+
+UDF's and Links:-
+  with links in user-defined-networks you can create aliases.
+
+Sharing Names:-
+  You can make multiple containers with different network all with the same name
+
+#
+# Chapter - Container Behaviour
+#
 
 
 
@@ -93,6 +543,8 @@ The '--name' argument will add the given name as the name of the container.
 #  Section - UTILIZING DOCKER  #
 #                              #
 ################################
+
+
 ###############################
 #                             #
 #  Section - ADOPTING DOCKER  #
