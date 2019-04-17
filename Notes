@@ -4,11 +4,11 @@ Learn Docker Notes
 - Lessons (follow along)
 - Assignments - To Complete
 
-#############################
-#                           #
+############################
+#                          #
 #  Section - INTRODUCTION  #
-#                           #
-#############################
+#                          #
+############################
 
 Docker runs applications / light-weight OS's inside containers
 to allow you to bundle together all your dependencies in a way that 
@@ -536,7 +536,33 @@ Sharing Names:-
 # Chapter - Container Behaviour
 #
 
+The environment:-
+  The '-e' flag allows you to set variables within a containers environment
+  for example:
 
+  'docker container run -it -e "PS1=\h:\w# " myalpine:latest' sets the prompt in the
+  bash shell
+
+  We can also set environment variables in the Dockerfile.
+  e.g.
+
+  'ENV PS1 "\h:\w# "' sets the bash prompt within the docker file
+
+  Using an equals sign and spaces we can assign multiple environment variables
+  in one go:
+  'ENV PS1="\h:\w# " PS2=">>"'
+
+  the -e flag overwrites and ENV variables set in a Dockerfile
+
+  We can set environment variables in a container using the --env-file flag.
+  e.g.
+  'docker container run --env-file app.env alpine:latest env'
+
+  we can also export variables set in our host environment.
+  if we had the environment variable NODE_ENV=prod in our local environment
+  and used:
+  'docker container run -e NODE_ENV alpine:latest'
+  then NODE_ENV will also be set in the container
 
 ################################
 #                              #
