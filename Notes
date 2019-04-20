@@ -564,6 +564,21 @@ The environment:-
   'docker container run -e NODE_ENV alpine:latest'
   then NODE_ENV will also be set in the container
 
+Interacting With Postgres:-
+  to connect to postgres through the command line we can use the following
+  'psql -h localhost -U julian test' where julian is the user and test is the db
+
+Configuring Postgres:-
+  We can connect to the postgres container using environment variables.
+  'docker container run --rm --name pg -d -e "POSTGRES_USER=myuser" -e "POSTGRES_PASSWORD=secret" postgres:9.6.6-alpine"
+
+  We can then interact with the db via other containers like so
+  'docker container run --rm --link pg -it postgres:9.6.6-alpine psql -h pg -U myuser'
+
+Using a Database:-
+  
+
+
 ################################
 #                              #
 #  Section - UTILIZING DOCKER  #
