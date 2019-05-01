@@ -576,8 +576,31 @@ Configuring Postgres:-
   'docker container run --rm --link pg -it postgres:9.6.6-alpine psql -h pg -U myuser'
 
 Using a Database:-
+  docker container run --name pg --env-file db.env -d postgres:9.6.6-alpine
   
+  docker container run --link pg --env-file app.env -p 9292:9292 jfahrer/demo_web_app:latest
 
+Try it out:-
+  With UDF's & same env-file
+    start pg:
+      docker container run --rm --network cont-behave --name pg --env-file app.env -d postgres:9.6.6-alpine
+
+    start web-server:
+      docker container run --rm --network cont-behave --env-file app.env -p 9292:9292 jfahrer/demo_web_app:latest
+
+  Setting env-flags locally:
+    start pg:
+      docker container run --rm --network cont-behave --name pg -e "POSTGRES_DB" -e "POSTGRES_USER" -e "POSTGRES_PASSWORD" -e "POSTGRES_HOST" -d postgres:9.6.6-alpine
+    start web-server:
+      docker container run --rm --network cont-behave --name web-server -e "POSTGRES_DB" -e "POSTGRES_USER" -e "POSTGRES_PASSWORD" -e "POSTGRES_HOST" -p 9292:9292 jfahrer/demo_web_app:latest
+
+  Multiple Containers:
+    As above (but start web servers on different ports)
+
+
+
+How it works:-
+  Shell scripting with env variables is very important in the docker world.
 
 ################################
 #                              #
