@@ -597,10 +597,43 @@ Try it out:-
   Multiple Containers:
     As above (but start web servers on different ports)
 
-
-
 How it works:-
   Shell scripting with env variables is very important in the docker world.
+
+
+#
+# Chapter - Scaling a Web Service
+#
+
+What we will build:-
+  Load Balancer with nginx - http to Reverse Proxy to one of many web servers.
+  Uses docker built dns server (needs user defined network)
+
+  See Scaling service for examples.
+
+  To build initial image for load balancer:
+    'docker image build -t jfahrer/lb:latest .'
+
+  To run the load balancer, with the proxy.conf configured appropriately:
+    'docker container run --network scaling -p 80:80 jfahrer/lb:latest'
+
+  Can use envsubst to configure proxy file dynamically. By setting envs 
+  locally and then running:
+    'envsubst < <sourcefile>'
+
+  You can also specify which variables to set:
+    'envsubst '$VAR1' < <sourcefile>'
+
+  By appending a file name to the end of the command we can output a file
+  with the environment variables replaced.
+    'envsubst '$VAR1' < <sourcefile> > <outputfile>'
+
+  
+
+#
+# Chapter - Managing containers with Docker Compose
+#
+
 
 ################################
 #                              #
