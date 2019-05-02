@@ -609,7 +609,7 @@ What we will build:-
   Load Balancer with nginx - http to Reverse Proxy to one of many web servers.
   Uses docker built dns server (needs user defined network)
 
-  See Scaling service for examples.
+  See Scaling service folder for examples.
 
   To build initial image for load balancer:
     'docker image build -t jfahrer/lb:latest .'
@@ -628,12 +628,44 @@ What we will build:-
   with the environment variables replaced.
     'envsubst '$VAR1' < <sourcefile> > <outputfile>'
 
-  
+  !! Need to make shell scripts executable:
+    'chmod +x start.sh'
+
+Using the Load Balancer:
+  Create user defined network:
+    'docker network create scaling'
+  Set up Postgres:
+    'docker container run --rm --network scaling --name pg --env-file ./db/db.env -v pgdata:/var/lib/postgresql/data -d postgres:9.6.6-alpine'
+  Start jfahrer/demo_web_app:
+    - named webapp - do not forward ports
+    'docker container run --rm --network scaling --name webapp --env-file ./app/app.env jfahrer/demo_web_app:latest'
+  Set up load balancer:
+    - set env PROXY_UPSTREAM TO 'webapp:9292'
+    - set port to 80:80
+    Update PROXY_UPSTREAM in Dockerfile. (done)
+    'docker image build -t jfahrer/lb:latest ./lb'
+    'docker container run --network scaling -e PROXY_UPSTREAM=webapp:9292 -p 80:80 --name lb jfahrer/lb:latest'
+
+Using Multiple Containers:
+  Create user defined network:
+    'docker network create scaling'
+  Set up Postgres:
+    'docker container run --rm --network scaling --name pg --env-file ./db/db.env -v pgdata:/var/lib/postgresql/data -d postgres:9.6.6-alpine'
+  Define network for loadbalancer and webapp
+    'docker network create webapp'
+  Set up load balancer:
+    - set env PROXY_UPSTREAM TO 'webapp:9292'
+    - set port to 80:80
+    Update PROXY_UPSTREAM in Dockerfile. (done)
+    'docker image build -t jfahrer/lb:latest ./lb'
+    'docker container run --network scaling -e PROXY_UPSTREAM=webapp:9292 -p 80:80 --name lb jfahrer/lb:latest'
+  Start jfahrer/demo_web_app:
+    - use network scaling (to connect to pg) and alias webapp (to connect to load balancer) - do not forward ports
+    'docker container run --rm --network scaling --network-alias webapp --env-file ./app/app.env -d jfahrer/demo_web_app:latest'
 
 #
 # Chapter - Managing containers with Docker Compose
 #
-
 
 ################################
 #                              #
