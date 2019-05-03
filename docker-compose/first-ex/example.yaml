@@ -1,0 +1,15 @@
+name: Julian
+
+# this is a map (key value store) with
+# nested maps
+user:
+  username: Julian
+  attributes:
+    country: Germany
+    skills: Docker
+
+  # this is a list (the - items)
+  languages:
+    - ruby
+    - perl
+    - python

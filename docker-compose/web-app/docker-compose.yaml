@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  webapp:
+    image: jfahrer/demo_web_app:wait_for_pg
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+    depends_on:
+      - "pg"
+
+  pg:
+    image: postgres:9.6.6-alpine
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  lb:
+    image: jfahrer/lb:v3
+    # build:
+    #   context: ../load_balancer
+    depends_on:
+      - "webapp"
+    environment:
+      - PROXY_UPSTREAM
+    ports:
+      - "80:80"
+
+volumes:
+  pg-data:

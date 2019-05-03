@@ -667,6 +667,61 @@ Using Multiple Containers:
 # Chapter - Managing containers with Docker Compose
 #
 
+Makes our life much easier!
+
+docker-compose allows to make easily repeatable docker files.
+
+Docker compose are written in yaml files. (see example.yaml)
+
+yaml file should be called 'docker-compose.yaml'.
+
+You must first specify the version that you will be using. and then you should 
+list the services.
+
+Behind the scenes docker compose creates a network for you.
+
+The name of the container will be the folder name, the service and an index.
+
+It will then connect you to the console.
+
+if you have multiple services defined in your docker-compose file, docker will spin up all services, unless you name them specifically e.g.
+  'docker-compose up pg'
+  will only start the service named pg in your docker-compose file.
+
+Like with regular docker, '-d' starts a container in detached mode.
+
+docker-compose also won't delete volumes etc automatically.
+
+'docker-compose ps' lists all containers within a project
+
+'docker-compose exec alpine sh' allows us to connect to the shell named 
+alpine
+
+docker-compose sets up a network name and also network aliases for each 
+services. You can then perform actions on the specific containers are a 
+group of services using these alias names.
+
+stdin_open: true
+tty: true
+
+is equivalent to the -i and -t flags (-it)
+
+You can also use a .env file to set environment variables which 
+docker-compose will automatically read. You can then assign the necessary
+env variables into each container using a list on the 'environment' key.
+
+The depends_on command has limitations. (can use manual wait_for shell 
+script)
+
+You can also use docker-compose to rebuild images as required.
+Using the 'build' key or you can use the --build argument while
+running the docker-compose command.
+
+The --scale argument allows you to select a defined service, and create
+n number of containers for that specific service.
+
+e.g. 'docker-compose up -d --scale webapp=5'
+
 ################################
 #                              #
 #  Section - UTILIZING DOCKER  #
