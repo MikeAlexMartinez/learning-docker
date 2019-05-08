@@ -722,11 +722,6 @@ n number of containers for that specific service.
 
 e.g. 'docker-compose up -d --scale webapp=5'
 
-################################
-#                              #
-#  Section - UTILIZING DOCKER  #
-#                              #
-################################
 
 
 ###############################

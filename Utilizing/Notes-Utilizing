@@ -1,0 +1,99 @@
+
+################################
+#                              #
+#  Section - UTILIZING DOCKER  #
+#                              #
+################################
+
+#
+# Chapter - The Build Process
+#
+
+Understanding Layers:-
+  Images consist of multiple layers.
+
+  Docker stores changes to an image, (as seen in a Dockerfile), as layers,
+  i.e. the layers represent filesystem changes to the image over time.
+
+  Not every instruction adds a layer, some only add metadata.
+  e.g. the CMD instruction.
+
+Creating Layers:-
+  Layers are represented as hashed values which you can view by
+  running 'docker image inspect <image identifier/tag>'
+
+  Config can be seen in this output.
+
+  Only Copy, Add and Run will create layers.
+
+  FROM takes layers, and metadata from another image.
+
+  Other commands add metadata to an image.
+
+The Build Process:-
+  The build process utilizes these layers to significantly speed
+  up the build process. By storing hashed values of a layers contents,
+  if that layer is already stored locally, the build process reuse it
+  rather than needing to reconstruct the layer.
+
+  Docker uses intermediate images to run the build process.
+
+  running 'docker image build' with the '--no-cache' parameter
+  will ensure that the image builds a fresh image, without using any
+  cached layers.
+
+How the Cache Works:-
+  Its possible to see a highlevel view of the cache by running
+  'docker image history <image name/tag>'.
+
+  The cache evaluates the instruction, and compares that to whats in
+  the Dockerfile. If it or the sequence before it has changed, then
+  the cache won't be valid.
+
+Invalidating the cache:-
+  You can invalidate a cache by changing an instruction.
+  You can also change the order of instructions or add a new
+  instruction.
+
+Copy and ADD:-
+  Add - when fetching a resource, e.g. a file online, docker may
+  check the HEAD of the resource to see when it was last modified.
+
+  A file needs to be changed in order to invalidate the cache of 
+  a layer that is obtained from the copy command.
+
+  Changing the order of instructions will still force cache invalidation.
+
+Dangling Images:-
+  Are images that were used but might no longer be needed.
+  'docker images prune' will remove unrequired images.
+
+  'docker images prune -a' will remove all images that aren't referenced
+  in another image.
+
+Lightweight Images:-
+  You should remove unnecessary files form an image etc.
+  e.g. temp files.
+
+  If you do so using independent commands, it will create
+  multiple dependent layers, and won't reduce the size,
+  so it becomes important to use command chaining in the 
+  Dockerfile so that the resulting layer only contains
+  the necessary files.
+
+  You can create multiple lines, but have one instruction by
+  using a backslash
+
+The writable layer:-
+  When running a container, the container makes use of the 
+  layers created for it, and adds another layer for working memory
+  called 'the writable layer'.
+
+  'docker container ls -s' demonstrates this.
+
+  You should avoid over-utilizing the writable layer in favour of
+  volumes.
+
+#
+# Chapter - Writing Code
+#
