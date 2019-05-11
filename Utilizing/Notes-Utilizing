@@ -97,3 +97,7 @@ The writable layer:-
 #
 # Chapter - Writing Code
 #
+
+Hello World:-
+  In a Dockerfile the 'WORKDIR' command allows you to specify 
+  the current working directory of various items
