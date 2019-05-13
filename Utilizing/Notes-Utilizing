@@ -101,3 +101,34 @@ The writable layer:-
 Hello World:-
   In a Dockerfile the 'WORKDIR' command allows you to specify 
   the current working directory of various items
+
+Dockerfiles and quick starting:-
+  Anything that can be done ahead of time should be.
+  for example, when building an image, you should compile source
+  code etc so that the container can start as quickly as possible
+  when it is started.
+
+Picking And Image:-
+  Easiest to search for a programming language.
+  Popular languages will likely have official images.
+  
+  You should pick a specific image and avoid the latest tag.
+
+  slim and alpine versions are very lightweight versions.
+
+Iterating with docker-compose:-
+  Needing to frequently rebuild images and run them as you modify
+  source code could become tedious. A more suitable task would 
+  be to user a 'bind mount' to link src code with a folder in the
+  directory. This way, you don't need to always rebuild images, as
+  source code changes.
+
+  You can use the 'command' argument to run the equivalent 'CMD'
+  argument in a docker-compose file.
+
+Running commands:-
+  docker-compose run can allow you to execute commands in the context
+  of your container.
+
+  You should user the rm flag with docker-compose run otherwise, you end
+  up with lot's of containers sticking around.
