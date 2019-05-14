@@ -1,0 +1,32 @@
+{
+  "name": "web-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod:start": "node ./build/app.js",
+    "start": "npm run build:live",
+    "build": "tsc -p .",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.0.1",
+    "nodemon": "^1.19.0",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/dotenv-safe": "^5.0.3",
+    "@types/express": "^4.16.1",
+    "dotenv": "^8.0.0",
+    "dotenv-safe": "^6.1.0",
+    "express": "^4.16.4",
+    "get-docker-host": "^1.0.3",
+    "is-in-docker": "^0.1.2"
+  }
+}
