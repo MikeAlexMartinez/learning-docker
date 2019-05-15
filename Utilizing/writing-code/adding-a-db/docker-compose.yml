@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  app:
+    image: adding-a-db:nodets
+    build:
+      context: .
+    ports:
+      - 80:3030
+    volumes:
+      - ./app:/node/project/app
+    command: sh -c "npm run start"
+
+  pg:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_USER=demo
+      - POSTGRES_PASSSWORD=secret
+      - POSTGRES_DB=demo
+    volumes:
+      - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create-table.sql
