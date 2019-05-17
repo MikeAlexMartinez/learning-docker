@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS requests (
-  id serial primary key
-  requested_at character varying,
-  ip character varying,
-  host character varying,
-  path character varying
+  id SERIAL PRIMARY KEY,
+  requested_at VARCHAR,
+  ip VARCHAR,
+  host VARCHAR,
+  path VARCHAR
 );

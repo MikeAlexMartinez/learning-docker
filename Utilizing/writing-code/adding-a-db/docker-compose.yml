@@ -8,14 +8,25 @@ services:
     ports:
       - 80:3030
     volumes:
-      - ./app:/node/project/app
-    command: sh -c "npm run start"
+      - .:/node/project/app
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - APP_PORT
+    command: sh -c "./utilities/wait-for-it.sh pg:5432; npm run start"
+    depends_on:
+      - "pg"
 
   pg:
     image: postgres:9.6-alpine
     environment:
-      - POSTGRES_USER=demo
-      - POSTGRES_PASSSWORD=secret
-      - POSTGRES_DB=demo
+      - POSTGRES_USER
+      - POSTGRES_PASSSWORD
+      - POSTGRES_DB
     volumes:
       - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create-table.sql
+
+volumes:
+  pg-data:

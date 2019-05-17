@@ -2,7 +2,7 @@ FROM node:8.16.0-alpine
 
 WORKDIR /node/project/app
 
-COPY ./app .
+COPY . .
 
 RUN npm install \
   && npm run build
