@@ -1,0 +1,19 @@
+<h1>Requests:</h1>
+<table>
+  <tbody>
+    <tr>
+      <th>IP</th>
+      <th>Host</th>
+      <th>Path</th>
+      <th>Timestamp</th>
+    </tr>
+    {{#each requests}}
+      <tr>
+        <td>{{this.ip}}</td>
+        <td>{{this.hostname}}</td>
+        <td>{{this.path}}</td>
+        <td>{{this.timestamp}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
