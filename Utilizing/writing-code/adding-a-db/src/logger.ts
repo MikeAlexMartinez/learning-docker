@@ -15,7 +15,6 @@ async function logger(request: Request, response: Response, next: NextFunction) 
   });
   // await writeLogEntry(logEntry);
   const logsWritten = await writeLogToDb(logEntry);
-  console.log(`Inserted ${logsWritten} Logs`);
   next();
 }
 

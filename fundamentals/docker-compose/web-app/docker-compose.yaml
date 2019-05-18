@@ -29,7 +29,7 @@ services:
     environment:
       - PROXY_UPSTREAM
     ports:
-      - "80:80"
+      - "80:3030"
 
 volumes:
   pg-data:

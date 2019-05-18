@@ -16,12 +16,8 @@ app.set('view engine', 'handlebars')
 app.use(logger);
 
 app.get('/requests', async (req: Request, res: Response) => {
-  let requests: LogEntryHash[];
-
   try {
-    requests = await getRequests();
-    console.log(requests);
-
+    const requests: LogEntryHash[] = await getRequests();
     return res.render('requests', {
       requests
     });
