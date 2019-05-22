@@ -132,3 +132,65 @@ Running commands:-
 
   You should user the rm flag with docker-compose run otherwise, you end
   up with lot's of containers sticking around.
+
+#
+# Chapter - Running Containers
+#
+
+Container Statistics:-
+  With 'docker container stats' command we find out about how much
+  resources the container is using. Theoretically a container can
+  use all of the resources of a host operating system, although they can be
+  constrained.
+
+Limiting Resources:-
+  the --memory flag will limit memory of a system (e.g. --memory 256M will limit 
+  container to 256 MB of data)
+  the --cpus flag will limit the number of cpus the container can use.
+
+  the --memory-reservation tells the host system to keep this much memory available
+  for a specific container.
+  --cpu-shares assigns cpu usage to a container, assigning the most cpu power to 
+  those containers with the highest shares.
+
+  If containers use too much memory, you run the risk of your container being killed
+
+Docker Compose and resources:-
+  Docker-compose and the resource restraining commands are only compatible in version
+  2 due to version 3 being made compatible with docker swarm.
+
+Using a tmpfs:-
+  tmpfs is a temporary file storage facility.
+  All data in tmpfs is stored in memory and so won't be saved to the host system.
+  However you shouldn't use signicant amounts of data in tmpfs as this could lead to
+  too much resource being used of the host.
+
+  To use tmpfs you can use the --tmpfs flag with a directory e.g.
+    'docker container run --tmpfs /data -it alpine:latest'
+  
+  or, you can use the --mount command with type and dst arguments specified, e.g.
+    'docker container run --mount type=tmpfs,dst=/data -it alpine:latest'
+
+  Using --tmpfs with --read-only flag means you can't write to the host containers
+  filesystem
+
+  !!IMPORTANT
+
+  One should write to the tmpfs storage when you want to store data but don't want
+  it to end up in the host systems harddrive.
+
+Running nginx read-only:-
+
+Changing the user:-
+
+Docker Security:-
+
+Entrypoints:-
+
+Entrypoints & Custom Commands:-
+
+Command Line Containers:-
+
+Use an ENTRYPOINT:-
+
+One Concern Per Container:-
